@@ -11,12 +11,14 @@ struct Options {
 #[argh(subcommand)]
 enum Subcommand {
     Download(self::commands::download::Options),
+    Config(self::commands::config::Options),
 }
 
 async fn async_main(options: Options) -> anyhow::Result<()> {
     let client = gofile::Client::new();
     match options.subcommand {
         Subcommand::Download(options) => self::commands::download::exec(client, options).await?,
+        Subcommand::Config(options) => self::commands::config::exec(client, options).await?,
     }
 
     Ok(())

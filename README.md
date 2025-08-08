@@ -1,6 +1,8 @@
 # gofile-rs
 A Rust library to interact with [gofile.io](https://gofile.io). 
 
+## CLI
+
 ## License
 Licensed under either of
  * Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)

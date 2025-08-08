@@ -1,9 +1,8 @@
 use anyhow::Context;
-use etcetera::AppStrategy;
-use etcetera::AppStrategyArgs;
+
 use tokio::io::AsyncWriteExt;
 
-const DEFAULT_CONFIG: &str = r#"# The account api token.
+const DEFAULT_CONFIG: &str = r#"# Your account api token. (Optional)
 # token = "YOUR TOKEN HERE"
 "#;
 
@@ -27,14 +26,7 @@ pub struct EditOptions {}
 pub async fn exec(_client: gofile::Client, options: Options) -> anyhow::Result<()> {
     match options.subcommand {
         Subcommand::Edit(_options) => {
-            let app_strategy = etcetera::choose_app_strategy(AppStrategyArgs {
-                app_name: "gofile-cli".into(),
-                author: "".into(),
-                top_level_domain: "".into(),
-            })?;
-
-            let config_dir = app_strategy.config_dir();
-            tokio::fs::create_dir_all(&config_dir).await?;
+            let config_dir = crate::get_config_dir().context("failed to get config dir")?;
 
             let config_path = config_dir.join("config.toml");
             match tokio::fs::File::create_new(&config_path).await {

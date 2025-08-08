@@ -1,8 +1,11 @@
 use crate::AccountResponse;
 use crate::ApiResponse;
 use crate::Error;
+use crate::MultipartPart;
 use crate::Page;
+use crate::UploadInfo;
 use reqwest::header::AUTHORIZATION;
+use reqwest::multipart::Form;
 use std::sync::Arc;
 
 const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36";
@@ -31,7 +34,7 @@ impl Client {
     }
 
     /// Set the token.
-    fn set_token(&self, token: String) {
+    pub fn set_token(&self, token: String) {
         *self.state.token.lock().expect("token poisoned") = Some(token);
     }
 
@@ -78,6 +81,25 @@ impl Client {
             .client
             .get(url)
             .header(AUTHORIZATION, format!("Bearer {token}"))
+            .send()
+            .await?
+            .error_for_status()?
+            .json()
+            .await?;
+        Ok(api_response.data)
+    }
+
+    /// Upload a file
+    pub async fn upload(&self, file: MultipartPart) -> Result<UploadInfo, Error> {
+        let form = Form::new().part("file", file);
+
+        let url = "https://upload.gofile.io/uploadfile";
+        let token = self.get_token()?;
+        let api_response: ApiResponse<UploadInfo> = self
+            .client
+            .post(url)
+            .header(AUTHORIZATION, format!("Bearer {token}"))
+            .multipart(form)
             .send()
             .await?
             .error_for_status()?

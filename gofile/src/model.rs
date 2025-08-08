@@ -1,8 +1,10 @@
 mod account_response;
 mod page;
+mod upload_info;
 
 pub(crate) use self::account_response::AccountResponse;
 pub use self::page::Page;
+pub use self::upload_info::UploadInfo;
 
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct ApiResponse<T> {

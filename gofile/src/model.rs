@@ -1,0 +1,13 @@
+mod account_response;
+mod page;
+
+pub(crate) use self::account_response::AccountResponse;
+pub use self::page::Page;
+
+#[derive(Debug, serde::Deserialize)]
+pub(crate) struct ApiResponse<T> {
+    // /// The status
+    // pub status: String,
+    /// The data
+    pub data: T,
+}

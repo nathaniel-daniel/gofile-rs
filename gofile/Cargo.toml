@@ -1,0 +1,19 @@
+[package]
+name = "gofile"
+version = "0.0.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+reqwest = { version = "0.12.22", features = [ "json" ], default-features = false }
+serde = { version = "1.0.219", features = [ "derive" ] }
+thiserror = "2.0.12"
+
+[dev-dependencies]
+tokio = { version = "1.47.1", features = [ "macros" ] }
+
+[features]
+default = [ "rustls-tls" ]
+native-tls = [ "reqwest/native-tls" ]
+rustls-tls = [ "reqwest/rustls-tls" ]
+

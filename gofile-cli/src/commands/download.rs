@@ -1,3 +1,4 @@
+use crate::util::parse_page_url;
 use anyhow::Context;
 use anyhow::ensure;
 use md5::Digest;
@@ -18,20 +19,9 @@ pub struct Options {
     pub url: String,
 }
 
-fn parse_url(url: &Url) -> anyhow::Result<&str> {
-    ensure!(url.host_str() == Some("gofile.io"));
-
-    let mut path_iter = url.path_segments().context("missing path")?;
-    ensure!(path_iter.next() == Some("d"));
-    let id = path_iter.next().context("missing id")?;
-    ensure!(path_iter.next().is_none());
-
-    Ok(id)
-}
-
 pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()> {
     let url = Url::parse(&options.url)?;
-    let id = parse_url(&url)?;
+    let id = parse_page_url(&url)?;
 
     client.login_guest().await.context("failed to log in")?;
 

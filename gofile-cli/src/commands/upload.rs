@@ -27,6 +27,7 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
     {
         bail!("file \"{}\" does not exist", options.path.display());
     }
+    // TODO: Wrap in a progress tracker
     let file = gofile::MultipartPart::file(options.path).await?;
 
     if options.use_guest {
@@ -44,7 +45,14 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
     }
     let upload_info = client.upload(file).await.context("failed to upload file")?;
 
-    println!("{}", upload_info.download_page);
+    println!("Url: {}", upload_info.download_page);
+    println!("Id: {}", upload_info.id);
+    println!("Size: {}", upload_info.size);
+    println!("Parent Folder Id: {}", upload_info.parent_folder);
+    println!("Parent Folder Code: {}", upload_info.parent_folder_code);
+    if let Some(guest_token) = upload_info.guest_token {
+        println!("Guest Token: {guest_token}");
+    }
 
     Ok(())
 }

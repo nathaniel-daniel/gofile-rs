@@ -1,9 +1,11 @@
+use time::OffsetDateTime;
+
 /// The info on an upload
 #[derive(Debug, serde::Deserialize)]
 pub struct UploadInfo {
     /// The time this was created.
-    #[serde(rename = "createTime")]
-    pub create_time: u64,
+    #[serde(rename = "createTime", with = "time::serde::timestamp")]
+    pub create_time: OffsetDateTime,
 
     /// The page where this file can be downloaded.
     #[serde(rename = "downloadPage")]
@@ -25,8 +27,8 @@ pub struct UploadInfo {
     pub mimetype: String,
 
     /// The modification time
-    #[serde(rename = "modTime")]
-    pub mod_time: u64,
+    #[serde(rename = "modTime", with = "time::serde::timestamp")]
+    pub mod_time: OffsetDateTime,
 
     /// The file name
     pub name: String,

@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use time::OffsetDateTime;
 
 /// A download page
 #[derive(Debug, serde::Deserialize)]
@@ -6,14 +7,14 @@ pub struct Page {
     #[serde(rename = "childrenCount")]
     pub children_count: u64,
     pub code: String,
-    #[serde(rename = "createTime")]
-    pub create_time: u64,
+    #[serde(rename = "createTime", with = "time::serde::timestamp")]
+    pub create_time: OffsetDateTime,
     pub id: String,
     pub children: HashMap<String, PageChild>,
     #[serde(rename = "totalSize")]
     pub total_size: u64,
-    #[serde(rename = "modTime")]
-    pub mod_time: u64,
+    #[serde(rename = "modTime", with = "time::serde::timestamp")]
+    pub mod_time: OffsetDateTime,
     pub name: String,
     pub public: bool,
     #[serde(rename = "totalDownloadCount")]
@@ -24,10 +25,10 @@ pub struct Page {
 pub struct PageChild {
     #[serde(rename = "downloadCount")]
     pub download_count: Option<u64>,
-    #[serde(rename = "createTime")]
-    pub create_time: u64,
-    #[serde(rename = "modTime")]
-    pub mod_time: u64,
+    #[serde(rename = "createTime", with = "time::serde::timestamp")]
+    pub create_time: OffsetDateTime,
+    #[serde(rename = "modTime", with = "time::serde::timestamp")]
+    pub mod_time: OffsetDateTime,
     /// The url to download from
     pub link: Option<String>,
     /// The md5 hex hash

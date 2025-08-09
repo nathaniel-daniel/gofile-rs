@@ -1,5 +1,6 @@
 mod commands;
 mod config;
+mod util;
 
 pub use self::config::Config;
 use anyhow::Context;
@@ -35,6 +36,7 @@ enum Subcommand {
     Download(self::commands::download::Options),
     Config(self::commands::config::Options),
     Upload(self::commands::upload::Options),
+    Info(self::commands::info::Options),
 }
 
 async fn async_main(options: Options) -> anyhow::Result<()> {
@@ -43,6 +45,7 @@ async fn async_main(options: Options) -> anyhow::Result<()> {
         Subcommand::Download(options) => self::commands::download::exec(client, options).await?,
         Subcommand::Config(options) => self::commands::config::exec(client, options).await?,
         Subcommand::Upload(options) => self::commands::upload::exec(client, options).await?,
+        Subcommand::Info(options) => self::commands::info::exec(client, options).await?,
     }
 
     Ok(())

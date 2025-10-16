@@ -84,8 +84,11 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
         out_file.sync_all()?;
 
         let actual_md5_hash = hasher.finalize();
+        // TODO: Wait for md-5 to update geenric-array
+        #[expect(deprecated)]
+        let actual_md5_hash_slice = actual_md5_hash.as_slice();
         ensure!(
-            actual_md5_hash.as_slice() == expected_md5_hash,
+            actual_md5_hash_slice == expected_md5_hash,
             "md5 hash mismatch"
         );
 

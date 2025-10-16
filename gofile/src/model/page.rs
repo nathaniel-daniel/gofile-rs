@@ -4,9 +4,15 @@ use time::OffsetDateTime;
 /// A download page
 #[derive(Debug, serde::Deserialize)]
 pub struct Page {
+    /// The number of children
     #[serde(rename = "childrenCount")]
     pub children_count: u64,
+
+    /// The folder code.
+    ///
+    /// This shows up in the url as "https://gofile.io/d/{code}".
     pub code: String,
+
     #[serde(rename = "createTime", with = "time::serde::timestamp")]
     pub create_time: OffsetDateTime,
     pub id: String,

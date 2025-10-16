@@ -4,6 +4,7 @@ mod upload_info;
 
 pub(crate) use self::account_response::AccountResponse;
 pub use self::page::Page;
+pub use self::page::PageChild;
 pub use self::upload_info::UploadInfo;
 
 #[derive(Debug, serde::Deserialize)]

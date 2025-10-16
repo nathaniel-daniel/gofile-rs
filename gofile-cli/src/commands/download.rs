@@ -4,6 +4,7 @@ use anyhow::ensure;
 use md5::Digest;
 use md5::Md5;
 use std::io::Write;
+use std::path::Path;
 use std::path::PathBuf;
 use std::time::Duration;
 use url::Url;
@@ -19,18 +20,20 @@ pub struct Options {
     pub url: String,
 }
 
-pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()> {
-    let url = Url::parse(&options.url)?;
-    let id = parse_page_url(&url)?;
-
-    client.login_guest().await.context("failed to log in")?;
-
-    let page = client.get_page(id).await.context("failed to get page")?;
-    ensure!(page.children.len() == 1);
-    let child = page.children.values().next().context("missing child")?;
-
+async fn download_file(
+    client: &gofile::Client,
+    child: &gofile::PageChild,
+    out_dir: &Path,
+) -> anyhow::Result<()> {
     let expected_md5_hash =
         base16ct::lower::decode_vec(child.md5.as_ref().context("missing md5 hash")?)?;
+
+    let out_path = out_dir.join(child.name.clone());
+    let out_path_temp = nd_util::with_push_extension(&out_path, "part");
+
+    if out_path.try_exists()? {
+        eprintln!("file exists, skipping...");
+    }
 
     let progress_bar = indicatif::ProgressBar::new(child.size.context("missing file size")?);
     let progress_bar_style_template = "[Time = {elapsed_precise} | ETA = {eta_precise} | Speed = {bytes_per_sec}] {wide_bar} {bytes}/{total_bytes}";
@@ -47,9 +50,6 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
             }
         })
     };
-
-    let out_path = PathBuf::from(child.name.clone());
-    let out_path_temp = nd_util::with_push_extension(&out_path, "part");
 
     let token = client.get_token()?;
     let download_url = child.link.as_ref().context("missing download url")?;
@@ -84,8 +84,11 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
         out_file.sync_all()?;
 
         let actual_md5_hash = hasher.finalize();
+        // TODO: Wait for md-5 to update geenric-array
+        #[expect(deprecated)]
+        let actual_md5_hash_slice = actual_md5_hash.as_slice();
         ensure!(
-            actual_md5_hash.as_slice() == expected_md5_hash,
+            actual_md5_hash_slice == expected_md5_hash,
             "md5 hash mismatch"
         );
 
@@ -98,6 +101,24 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
     .await??;
 
     progress_bar_tick_handle.await?;
+
+    Ok(())
+}
+
+pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()> {
+    let url = Url::parse(&options.url)?;
+    let id = parse_page_url(&url)?;
+
+    client.login_guest().await.context("failed to log in")?;
+
+    let page = client.get_page(id).await.context("failed to get page")?;
+
+    let out_path = PathBuf::from(&page.code);
+    tokio::fs::create_dir_all(&out_path).await?;
+
+    for child in page.children.values() {
+        download_file(&client, child, &out_path).await?;
+    }
 
     Ok(())
 }

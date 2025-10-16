@@ -5,6 +5,7 @@ pub use self::client::Client;
 pub(crate) use self::model::AccountResponse;
 pub(crate) use self::model::ApiResponse;
 pub use self::model::Page;
+pub use self::model::PageChild;
 pub use self::model::UploadInfo;
 pub use reqwest::multipart::Part as MultipartPart;
 

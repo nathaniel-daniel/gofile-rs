@@ -8,9 +8,9 @@ license = "MIT OR Apache-2.0"
 anyhow = "1.0.100"
 argh = "0.1.13"
 base16ct = { version = "0.3.0", features = [ "alloc" ] }
-etcetera = "0.10.0"
+etcetera = "0.11.0"
 gofile = { version = "0.0.0", path = "../gofile", default-features = false }
-indicatif = "0.18.0"
+indicatif = "0.18.3"
 md-5 = "0.10.6"
 mime_guess = { version = "2.0.5", default-features = false }
 nd-util = { git = "https://github.com/nathaniel-daniel/nd-util-rs", version = "0.0.0" }
@@ -19,7 +19,7 @@ pin-project-lite = "0.2.16"
 reqwest = { version = "0.12.24", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }
 tokio = { version = "1.48.0", features = [ "rt-multi-thread", "fs" ] }
-tokio-util = "0.7.16"
+tokio-util = "0.7.17"
 toml = "0.9.8"
 url = "2.5.7"
 

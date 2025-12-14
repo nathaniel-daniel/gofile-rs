@@ -4,6 +4,7 @@ mod util;
 
 pub use self::config::Config;
 use anyhow::Context;
+use clap::Parser;
 use etcetera::AppStrategy;
 use etcetera::AppStrategyArgs;
 use std::path::PathBuf;
@@ -18,20 +19,19 @@ pub fn get_config_dir() -> anyhow::Result<PathBuf> {
     let config_dir = app_strategy.config_dir();
 
     // Create config dir if it does not exist.
-    std::fs::create_dir_all(&config_dir).context("failed to create config dir")?;
+    std::fs::create_dir_all(&config_dir).context("Failed to create config dir")?;
 
     Ok(config_dir)
 }
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(description = "a cli to interact with gofile")]
+#[derive(Debug, clap::Parser)]
+#[command(about = "A cli to interact with https://gofile.io")]
 struct Options {
-    #[argh(subcommand)]
+    #[command(subcommand)]
     subcommand: Subcommand,
 }
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(subcommand)]
+#[derive(Debug, clap::Subcommand)]
 enum Subcommand {
     Get(self::commands::get::Options),
     Config(self::commands::config::Options),
@@ -52,7 +52,7 @@ async fn async_main(options: Options) -> anyhow::Result<()> {
 }
 
 fn main() -> anyhow::Result<()> {
-    let options: Options = argh::from_env();
+    let options = Options::parse();
 
     let tokio_rt = tokio::runtime::Builder::new_multi_thread()
         .enable_all()

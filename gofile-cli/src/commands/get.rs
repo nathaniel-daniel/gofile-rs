@@ -9,14 +9,9 @@ use std::path::PathBuf;
 use std::time::Duration;
 use url::Url;
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(
-    subcommand,
-    name = "download",
-    description = "download from a gofile link"
-)]
+#[derive(Debug, clap::Parser)]
+#[command(about = "Download a folder from a https://gofile.io link")]
 pub struct Options {
-    #[argh(positional)]
     pub url: String,
 }
 

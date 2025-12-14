@@ -13,13 +13,14 @@ confidence-threshold = 0.93
 private = { ignore = true }
 allow = [
     "Apache-2.0",
-    "MIT",
     "BSD-3-Clause",
-    "MPL-2.0",
+    "CDLA-Permissive-2.0",
     "ISC",
+    "MIT",
+    "MPL-2.0",
     "OpenSSL",
     "Unicode-3.0",
-    "CDLA-Permissive-2.0",
+    "Zlib",
 ]
 exceptions = []
 
@@ -39,11 +40,10 @@ license-files = [
 multiple-versions = "warn"
 highlight = "all"
 skip = [
-    { name = "windows-sys", version = "0.59.0" },
-    { name = "windows_x86_64_msvc", version = "0.52.6" },
-    { name = "windows_x86_64_gnu", version = "0.52.6" },
-    { name = "windows-targets", version = "0.52.6" },
-    { name = "windows-sys", version = "0.60.2" },
+    # This updates often and takes a while for the ecosystem to update.
+    { name = "windows-sys", version = "0" },
+    
+    { name = "getrandom", version = "0.2.16" },
 ]
 deny = []
 
@@ -54,6 +54,4 @@ allow-registry = [ "https://github.com/rust-lang/crates.io-index" ]
 allow-git = []
 
 [sources.allow-org]
-github = [
-    "nathaniel-daniel"
-]
+github = []

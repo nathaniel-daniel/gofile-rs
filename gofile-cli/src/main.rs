@@ -4,9 +4,13 @@ mod util;
 
 pub use self::config::Config;
 use anyhow::Context;
+use clap::Parser;
 use etcetera::AppStrategy;
 use etcetera::AppStrategyArgs;
+use shadow_rs::shadow;
 use std::path::PathBuf;
+
+shadow!(build);
 
 pub fn get_config_dir() -> anyhow::Result<PathBuf> {
     let app_strategy = etcetera::choose_app_strategy(AppStrategyArgs {
@@ -18,41 +22,44 @@ pub fn get_config_dir() -> anyhow::Result<PathBuf> {
     let config_dir = app_strategy.config_dir();
 
     // Create config dir if it does not exist.
-    std::fs::create_dir_all(&config_dir).context("failed to create config dir")?;
+    std::fs::create_dir_all(&config_dir).context("Failed to create config dir")?;
 
     Ok(config_dir)
 }
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(description = "a cli to interact with gofile")]
+#[derive(Debug, clap::Parser)]
+#[command(name = env!("CARGO_BIN_NAME"), about = "A cli to interact with https://gofile.io", version=build::CLAP_LONG_VERSION)]
 struct Options {
-    #[argh(subcommand)]
+    #[command(subcommand)]
     subcommand: Subcommand,
 }
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(subcommand)]
+#[derive(Debug, clap::Subcommand)]
 enum Subcommand {
-    Download(self::commands::download::Options),
+    Get(self::commands::get::Options),
     Config(self::commands::config::Options),
     Upload(self::commands::upload::Options),
     Info(self::commands::info::Options),
+    GenerateCompletions(self::commands::generate_completions::Options),
 }
 
 async fn async_main(options: Options) -> anyhow::Result<()> {
     let client = gofile::Client::new();
     match options.subcommand {
-        Subcommand::Download(options) => self::commands::download::exec(client, options).await?,
+        Subcommand::Get(options) => self::commands::get::exec(client, options).await?,
         Subcommand::Config(options) => self::commands::config::exec(client, options).await?,
         Subcommand::Upload(options) => self::commands::upload::exec(client, options).await?,
         Subcommand::Info(options) => self::commands::info::exec(client, options).await?,
+        Subcommand::GenerateCompletions(options) => {
+            self::commands::generate_completions::exec(options)?
+        }
     }
 
     Ok(())
 }
 
 fn main() -> anyhow::Result<()> {
-    let options: Options = argh::from_env();
+    let options = Options::parse();
 
     let tokio_rt = tokio::runtime::Builder::new_multi_thread()
         .enable_all()

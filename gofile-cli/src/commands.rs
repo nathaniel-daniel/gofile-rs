@@ -1,4 +1,5 @@
 pub mod config;
-pub mod download;
+pub mod generate_completions;
+pub mod get;
 pub mod info;
 pub mod upload;

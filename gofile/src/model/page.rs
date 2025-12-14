@@ -10,7 +10,7 @@ pub struct Page {
 
     /// The folder code.
     ///
-    /// This shows up in the url as "https://gofile.io/d/{code}".
+    /// This shows up in the url as `https://gofile.io/d/{code}`.
     pub code: String,
 
     #[serde(rename = "createTime", with = "time::serde::timestamp")]

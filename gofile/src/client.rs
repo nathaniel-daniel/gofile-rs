@@ -69,18 +69,20 @@ impl Client {
 
     /// Get a page.
     pub async fn get_page(&self, id: &str) -> Result<Page, Error> {
-        // wt is fairly constant, embedded in a js file.
-        let wt = "4fd6sg89d7s6";
+        // website token is fairly constant, embedded in a js file.
+        let website_token = "4fd6sg89d7s6";
         let page = 1;
         let page_size = 1000;
         let url = format!(
-            "https://api.gofile.io/contents/{id}?wt={wt}&contentFilter=&page={page}&pageSize={page_size}&sortField=name&sortDirection=1"
+            "https://api.gofile.io/contents/{id}?contentFilter=&page={page}&pageSize={page_size}&sortField=name&sortDirection=1"
         );
         let token = self.get_token()?;
-        let api_response: ApiResponse<Page> = self
+        let request = self
             .client
             .get(url)
-            .header(AUTHORIZATION, format!("Bearer {token}"))
+            .header(AUTHORIZATION, format!("Bearer {token}"));
+        let api_response: ApiResponse<Page> = request
+            .header("X-Website-Token", website_token)
             .send()
             .await?
             .error_for_status()?

@@ -9,14 +9,9 @@ use std::path::PathBuf;
 use std::time::Duration;
 use url::Url;
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(
-    subcommand,
-    name = "download",
-    description = "download from a gofile link"
-)]
+#[derive(Debug, clap::Parser)]
+#[command(about = "Download a folder from a https://gofile.io link")]
 pub struct Options {
-    #[argh(positional)]
     pub url: String,
 }
 
@@ -29,7 +24,7 @@ async fn download_file(
         base16ct::lower::decode_vec(child.md5.as_ref().context("missing md5 hash")?)?;
 
     let out_path = out_dir.join(child.name.clone());
-    let out_path_temp = nd_util::with_push_extension(&out_path, "part");
+    let out_path_temp = out_dir.with_added_extension("part");
 
     if out_path.try_exists()? {
         eprintln!("file exists, skipping...");
@@ -84,8 +79,6 @@ async fn download_file(
         out_file.sync_all()?;
 
         let actual_md5_hash = hasher.finalize();
-        // TODO: Wait for md-5 to update geenric-array
-        #[expect(deprecated)]
         let actual_md5_hash_slice = actual_md5_hash.as_slice();
         ensure!(
             actual_md5_hash_slice == expected_md5_hash,

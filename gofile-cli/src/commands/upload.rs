@@ -10,17 +10,13 @@ use std::time::Duration;
 use tokio::io::AsyncRead;
 use tokio::io::ReadBuf;
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(subcommand, name = "upload", description = "Upload a file to gofile")]
+#[derive(Debug, clap::Parser)]
+#[command(about = "Upload a file to https://gofile.io")]
 pub struct Options {
-    #[argh(positional, description = "the path to the file to upload")]
+    #[arg(help = "The path to the file to upload")]
     pub path: PathBuf,
 
-    #[argh(
-        switch,
-        long = "use-guest",
-        description = "force the use of a guest token"
-    )]
+    #[arg(long = "use-guest", help = "Force the use of a guest token")]
     pub use_guest: bool,
 }
 

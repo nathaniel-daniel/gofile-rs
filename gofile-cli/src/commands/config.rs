@@ -6,21 +6,20 @@ const DEFAULT_CONFIG: &str = r#"# Your account api token. (Optional)
 # token = "YOUR TOKEN HERE"
 "#;
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(subcommand, name = "config", description = "Manage the CLI config")]
+#[derive(Debug, clap::Parser)]
+#[command(about = "Manage the CLI config")]
 pub struct Options {
-    #[argh(subcommand)]
+    #[command(subcommand)]
     subcommand: Subcommand,
 }
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(subcommand)]
+#[derive(Debug, clap::Subcommand)]
 pub enum Subcommand {
     Edit(EditOptions),
 }
 
-#[derive(Debug, argh::FromArgs)]
-#[argh(subcommand, name = "edit", description = "edit the config")]
+#[derive(Debug, clap::Parser)]
+#[command(about = "edit the config")]
 pub struct EditOptions {}
 
 pub async fn exec(_client: gofile::Client, options: Options) -> anyhow::Result<()> {

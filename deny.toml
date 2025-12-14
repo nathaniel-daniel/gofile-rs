@@ -20,6 +20,7 @@ allow = [
     "MPL-2.0",
     "OpenSSL",
     "Unicode-3.0",
+    "Zlib",
 ]
 exceptions = []
 
@@ -41,6 +42,8 @@ highlight = "all"
 skip = [
     # This updates often and takes a while for the ecosystem to update.
     { name = "windows-sys", version = "0" },
+    
+    { name = "getrandom", version = "0.2.16" },
 ]
 deny = []
 

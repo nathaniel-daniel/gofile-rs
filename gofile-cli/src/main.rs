@@ -28,7 +28,7 @@ pub fn get_config_dir() -> anyhow::Result<PathBuf> {
 }
 
 #[derive(Debug, clap::Parser)]
-#[command(about = "A cli to interact with https://gofile.io", version=build::CLAP_LONG_VERSION)]
+#[command(name = env!("CARGO_BIN_NAME"), about = "A cli to interact with https://gofile.io", version=build::CLAP_LONG_VERSION)]
 struct Options {
     #[command(subcommand)]
     subcommand: Subcommand,
@@ -40,6 +40,7 @@ enum Subcommand {
     Config(self::commands::config::Options),
     Upload(self::commands::upload::Options),
     Info(self::commands::info::Options),
+    GenerateCompletions(self::commands::generate_completions::Options),
 }
 
 async fn async_main(options: Options) -> anyhow::Result<()> {
@@ -49,6 +50,9 @@ async fn async_main(options: Options) -> anyhow::Result<()> {
         Subcommand::Config(options) => self::commands::config::exec(client, options).await?,
         Subcommand::Upload(options) => self::commands::upload::exec(client, options).await?,
         Subcommand::Info(options) => self::commands::info::exec(client, options).await?,
+        Subcommand::GenerateCompletions(options) => {
+            self::commands::generate_completions::exec(options)?
+        }
     }
 
     Ok(())

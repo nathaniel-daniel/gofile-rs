@@ -4,6 +4,11 @@ version = "0.0.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 
+[[bin]]
+name = "gofile"
+path = "src/main.rs"
+doc = false
+
 [dependencies]
 anyhow = "1.0.100"
 argh = "0.1.13"

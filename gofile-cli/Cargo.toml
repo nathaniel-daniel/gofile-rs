@@ -22,6 +22,7 @@ opener = "0.8.3"
 pin-project-lite = "0.2.16"
 reqwest = { version = "0.12.25", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }
+shadow-rs = "1.4.0"
 tokio = { version = "1.48.0", features = [ "rt-multi-thread", "fs" ] }
 tokio-util = "0.7.17"
 toml = "0.9.8"
@@ -31,3 +32,6 @@ url = "2.5.7"
 default = [ "gofile/rustls-tls" ]
 native-tls = [ "gofile/native-tls" ]
 rustls-tls = [ "gofile/rustls-tls" ]
+
+[build-dependencies]
+shadow-rs = "1.4.0"

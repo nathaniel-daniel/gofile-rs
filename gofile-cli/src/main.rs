@@ -7,7 +7,10 @@ use anyhow::Context;
 use clap::Parser;
 use etcetera::AppStrategy;
 use etcetera::AppStrategyArgs;
+use shadow_rs::shadow;
 use std::path::PathBuf;
+
+shadow!(build);
 
 pub fn get_config_dir() -> anyhow::Result<PathBuf> {
     let app_strategy = etcetera::choose_app_strategy(AppStrategyArgs {
@@ -25,7 +28,7 @@ pub fn get_config_dir() -> anyhow::Result<PathBuf> {
 }
 
 #[derive(Debug, clap::Parser)]
-#[command(about = "A cli to interact with https://gofile.io")]
+#[command(about = "A cli to interact with https://gofile.io", version=build::CLAP_LONG_VERSION)]
 struct Options {
     #[command(subcommand)]
     subcommand: Subcommand,

@@ -33,7 +33,7 @@ struct Options {
 #[derive(Debug, argh::FromArgs)]
 #[argh(subcommand)]
 enum Subcommand {
-    Download(self::commands::download::Options),
+    Get(self::commands::get::Options),
     Config(self::commands::config::Options),
     Upload(self::commands::upload::Options),
     Info(self::commands::info::Options),
@@ -42,7 +42,7 @@ enum Subcommand {
 async fn async_main(options: Options) -> anyhow::Result<()> {
     let client = gofile::Client::new();
     match options.subcommand {
-        Subcommand::Download(options) => self::commands::download::exec(client, options).await?,
+        Subcommand::Get(options) => self::commands::get::exec(client, options).await?,
         Subcommand::Config(options) => self::commands::config::exec(client, options).await?,
         Subcommand::Upload(options) => self::commands::upload::exec(client, options).await?,
         Subcommand::Info(options) => self::commands::info::exec(client, options).await?,

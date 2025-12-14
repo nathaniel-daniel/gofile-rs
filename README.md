@@ -6,7 +6,7 @@ This repository contains a small CLI to upload and download files.
 
 ### Download a file
 ```bash
-gofile-cli download <url>
+gofile-cli get <url>
 ```
 
 ### Upload a file (needs user token in config)

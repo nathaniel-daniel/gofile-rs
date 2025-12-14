@@ -84,8 +84,6 @@ async fn download_file(
         out_file.sync_all()?;
 
         let actual_md5_hash = hasher.finalize();
-        // TODO: Wait for md-5 to update geenric-array
-        #[expect(deprecated)]
         let actual_md5_hash_slice = actual_md5_hash.as_slice();
         ensure!(
             actual_md5_hash_slice == expected_md5_hash,

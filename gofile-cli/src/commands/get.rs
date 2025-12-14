@@ -29,7 +29,7 @@ async fn download_file(
         base16ct::lower::decode_vec(child.md5.as_ref().context("missing md5 hash")?)?;
 
     let out_path = out_dir.join(child.name.clone());
-    let out_path_temp = nd_util::with_push_extension(&out_path, "part");
+    let out_path_temp = out_dir.with_added_extension("part");
 
     if out_path.try_exists()? {
         eprintln!("file exists, skipping...");

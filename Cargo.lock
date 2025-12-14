@@ -377,7 +377,6 @@ dependencies = [
  "indicatif",
  "md-5",
  "mime_guess",
- "nd-util",
  "opener",
  "pin-project-lite",
  "reqwest",
@@ -757,11 +756,6 @@ dependencies = [
  "security-framework-sys",
  "tempfile",
 ]
-
-[[package]]
-name = "nd-util"
-version = "0.0.0"
-source = "git+https://github.com/nathaniel-daniel/nd-util-rs#e5f37ad96b233f2e1e7ec89d0764b52fc75e2ad1"
 
 [[package]]
 name = "normpath"

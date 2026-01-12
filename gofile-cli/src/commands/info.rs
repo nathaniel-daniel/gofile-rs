@@ -25,23 +25,35 @@ pub struct Options {
 }
 
 fn output_human(page: &gofile::Page) {
-    for (id, page) in page.children.iter() {
-        println!("Id: {id}");
-        println!("Name: {}", page.name);
-        println!("Create Time: {}", page.create_time);
-        println!("Mod Time: {}", page.mod_time);
-        if let Some(size) = page.size {
+    for child in page.children.values() {
+        println!("Id: {}", child.id);
+        println!("Name: {}", child.name);
+        println!("Type: {:?}", child.kind);
+        println!("Create Time: {}", child.create_time);
+        println!("Mod Time: {}", child.mod_time);
+
+        // File
+        if let Some(size) = child.size {
             println!("Size: {size} bytes");
         }
-        if let Some(md5) = page.md5.as_ref() {
+        if let Some(md5) = child.md5.as_ref() {
             println!("Md5: {md5}");
         }
-        if let Some(download_count) = page.download_count.as_ref() {
+        if let Some(download_count) = child.download_count.as_ref() {
             println!("Download Count: {download_count}");
         }
-        if let Some(link) = page.link.as_ref() {
+        if let Some(link) = child.link.as_ref() {
             println!("Link: {link}");
         }
+
+        // Folder
+        if let Some(code) = child.code.as_ref() {
+            println!("Code: {code}");
+        }
+        if let Some(children_count) = child.children_count {
+            println!("Children: {children_count}");
+        }
+
         println!();
     }
 }

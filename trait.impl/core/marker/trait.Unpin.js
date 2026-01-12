@@ -1,0 +1,9 @@
+(function() {
+    var implementors = Object.fromEntries([["gofile",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> for <a class=\"enum\" href=\"gofile/enum.Error.html\" title=\"enum gofile::Error\">Error</a>",1,["gofile::Error"]],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> for <a class=\"struct\" href=\"gofile/struct.Client.html\" title=\"struct gofile::Client\">Client</a>",1,["gofile::client::Client"]],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> for <a class=\"struct\" href=\"gofile/struct.Page.html\" title=\"struct gofile::Page\">Page</a>",1,["gofile::model::page::Page"]],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> for <a class=\"struct\" href=\"gofile/struct.PageChild.html\" title=\"struct gofile::PageChild\">PageChild</a>",1,["gofile::model::page::PageChild"]],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> for <a class=\"struct\" href=\"gofile/struct.UploadInfo.html\" title=\"struct gofile::UploadInfo\">UploadInfo</a>",1,["gofile::model::upload_info::UploadInfo"]]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[1416]}

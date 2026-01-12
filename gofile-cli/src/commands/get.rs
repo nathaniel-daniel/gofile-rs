@@ -1,3 +1,4 @@
+use crate::Config;
 use crate::util::parse_page_url;
 use anyhow::Context;
 use anyhow::ensure;
@@ -13,6 +14,9 @@ use url::Url;
 #[command(about = "Download a folder from a https://gofile.io link")]
 pub struct Options {
     pub url: String,
+
+    #[arg(long = "output", short = 'o', default_value = ".")]
+    pub output: PathBuf,
 }
 
 async fn download_file(
@@ -99,14 +103,19 @@ async fn download_file(
 }
 
 pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()> {
+    let config = Config::load().context("failed to load config")?;
+
     let url = Url::parse(&options.url)?;
     let id = parse_page_url(&url)?;
 
-    client.login_guest().await.context("failed to log in")?;
+    match config.as_ref().and_then(|config| config.token.as_ref()) {
+        Some(token) => client.set_token(token.clone()),
+        None => client.login_guest().await?,
+    }
 
     let page = client.get_page(id).await.context("failed to get page")?;
 
-    let out_path = PathBuf::from(&page.code);
+    let out_path = options.output.join(&page.code);
     tokio::fs::create_dir_all(&out_path).await?;
 
     for child in page.children.values() {

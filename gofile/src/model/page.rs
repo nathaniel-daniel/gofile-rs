@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use time::OffsetDateTime;
 
 /// A download page
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct Page {
     /// The number of children
     #[serde(rename = "childrenCount")]
@@ -27,7 +27,7 @@ pub struct Page {
     pub total_download_count: u64,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct PageChild {
     #[serde(rename = "downloadCount")]
     pub download_count: Option<u64>,

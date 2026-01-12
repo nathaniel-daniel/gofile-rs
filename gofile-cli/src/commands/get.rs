@@ -1,6 +1,7 @@
 use crate::Config;
 use crate::util::parse_page_url;
 use anyhow::Context;
+use anyhow::bail;
 use anyhow::ensure;
 use md5::Digest;
 use md5::Md5;
@@ -11,28 +12,62 @@ use std::time::Duration;
 use url::Url;
 
 #[derive(Debug, clap::Parser)]
-#[command(about = "Download a folder from a https://gofile.io link")]
+#[command(about = "Download a file or folder from a https://gofile.io link")]
 pub struct Options {
     pub url: String,
 
-    #[arg(long = "output", short = 'o', default_value = ".")]
+    #[arg(
+        long = "output",
+        short = 'o',
+        default_value = ".",
+        help = "The output path"
+    )]
     pub output: PathBuf,
+
+    #[arg(help = "If specified, only download the child entry with this id")]
+    pub child_id: Option<String>,
+
+    #[arg(
+        long = "no-append-name",
+        help = "Do not append the file or folder name to the output path"
+    )]
+    pub no_append_name: bool,
 }
 
-async fn download_file(
+async fn try_metadata<P>(path: P) -> std::io::Result<Option<std::fs::Metadata>>
+where
+    P: AsRef<Path>,
+{
+    match tokio::fs::metadata(path).await {
+        Ok(metadata) => Ok(Some(metadata)),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
+        Err(error) => Err(error),
+    }
+}
+
+async fn download_page_child(
     client: &gofile::Client,
     child: &gofile::PageChild,
-    out_dir: &Path,
+    out_path: PathBuf,
 ) -> anyhow::Result<()> {
     let expected_md5_hash =
         base16ct::lower::decode_vec(child.md5.as_ref().context("missing md5 hash")?)?;
 
-    let out_path = out_dir.join(child.name.clone());
-    let out_path_temp = out_path.with_added_extension("part");
-
-    if out_path.try_exists()? {
-        eprintln!("file exists, skipping...");
+    let metadata = try_metadata(&out_path)
+        .await
+        .with_context(|| format!("failed to get metadata for \"{}\"", out_path.display()))?;
+    match metadata {
+        Some(metadata) if metadata.is_dir() => {
+            bail!("output path \"{}\" is a folder", out_path.display());
+        }
+        Some(_metadata) => {
+            // TODO: Consider validating md5 here and adding overwrite options to the cli.
+            eprintln!("file exists, skipping...");
+            return Ok(());
+        }
+        None => {}
     }
+    let out_path_temp = out_path.with_added_extension("part");
 
     let progress_bar = indicatif::ProgressBar::new(child.size.context("missing file size")?);
     let progress_bar_style_template = "[Time = {elapsed_precise} | ETA = {eta_precise} | Speed = {bytes_per_sec}] {wide_bar} {bytes}/{total_bytes}";
@@ -115,11 +150,36 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
 
     let page = client.get_page(id).await.context("failed to get page")?;
 
-    let out_path = options.output.join(&page.code);
-    tokio::fs::create_dir_all(&out_path).await?;
+    match options.child_id.as_ref() {
+        Some(child_id) => {
+            let child = page
+                .children
+                .get(child_id)
+                .with_context(|| format!("failed to locate child entry with id \"{child_id}\""))?;
 
-    for child in page.children.values() {
-        download_file(&client, child, &out_path).await?;
+            let mut out_path = options.output.clone();
+            if !options.no_append_name {
+                out_path = out_path.join(child.name.clone());
+            }
+
+            if let Some(parent) = out_path.parent() {
+                tokio::fs::create_dir_all(&parent).await?;
+            }
+
+            download_page_child(&client, child, out_path).await?;
+        }
+        None => {
+            let mut out_dir = options.output.clone();
+            if !options.no_append_name {
+                out_dir = out_dir.join(&page.code);
+            }
+            tokio::fs::create_dir_all(&out_dir).await?;
+
+            for child in page.children.values() {
+                let out_path = out_dir.join(child.name.clone());
+                download_page_child(&client, child, out_path).await?;
+            }
+        }
     }
 
     Ok(())

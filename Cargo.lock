@@ -568,6 +568,7 @@ dependencies = [
  "pin-project-lite",
  "reqwest",
  "serde",
+ "serde_json",
  "shadow-rs",
  "tokio",
  "tokio-util",

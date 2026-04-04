@@ -85,7 +85,7 @@ async fn download_page_child(
         })
     };
 
-    let (token, _) = client.get_tokens()?;
+    let token = client.get_token()?;
     let download_url = child.link.as_ref().context("missing download url")?;
     let mut response = client
         .client

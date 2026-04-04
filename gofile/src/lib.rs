@@ -19,6 +19,14 @@ pub enum Error {
     /// Missing token
     #[error("missing token")]
     MissingToken,
+
+    /// Tokio join error
+    #[error("tokio join error")]
+    TokioJoin(#[from] tokio::task::JoinError),
+
+    /// rquickjs error
+    #[error("js error")]
+    JsError(#[from] rquickjs::Error),
 }
 
 #[cfg(test)]

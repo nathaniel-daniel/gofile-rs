@@ -1,0 +1,45 @@
+name: Nightly
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-nightly-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        run: make build-release-windows
+
+      - name: Remove old nightly release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          make rm-nightly-release
+
+      - name: Release nightly
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          name: nightly
+          tag_name: nightly
+          files: |
+            target/x86_64-pc-windows-msvc/release/gofile.exe
+          fail_on_unmatched_files: true
+          target_commitish: ${{ github.sha }}

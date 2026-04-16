@@ -16,7 +16,7 @@ You can a build for Windows [here](https://github.com/nathaniel-daniel/gofile-rs
 
 Alternatively, you can build this yourself.
 Clone this repo, install Rust, open a terminal in that folder, then run `cargo build -p gofile-cli --release`.
-You should find your program in the `target` folder.
+You should find your program in the `target/release` folder.
 
 ### Download a file
 

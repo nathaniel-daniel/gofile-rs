@@ -2,6 +2,10 @@
 fmt-ci:
 	npx prettier .github --write
 
+.PHONY: fmt-readme
+fmt-readme:
+	npx prettier README.md --write
+
 .PHONY: build-release-windows
 build-release-windows:
 	cargo build -p gofile-cli --release --target x86_64-pc-windows-msvc

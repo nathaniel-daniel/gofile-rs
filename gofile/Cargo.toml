@@ -6,16 +6,16 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 base16ct = { version = "1.0.0", features = [ "alloc" ] }
-reqwest = { version = "0.13.2", features = [ "json", "multipart", "stream" ], default-features = false }
+reqwest = { version = "0.13.3", features = [ "json", "multipart", "stream" ], default-features = false }
 rquickjs = "0.11.0"
 serde = { version = "1.0.228", features = [ "derive" ] }
 sha2 = "0.11.0"
 thiserror = "2.0.18"
 time = { version = "0.3.47", features = [ "serde" ] }
-tokio = "1.52.0"
+tokio = "1.52.1"
 
 [dev-dependencies]
-tokio = { version = "1.52.0", features = [ "macros" ] }
+tokio = { version = "1.52.1", features = [ "macros" ] }
 
 [features]
 default = [ "rustls" ]

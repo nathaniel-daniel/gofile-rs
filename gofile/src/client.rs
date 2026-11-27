@@ -67,7 +67,7 @@ impl Client {
         let client = reqwest::Client::builder()
             .user_agent(USER_AGENT)
             .build()
-            .expect("failed to build client");
+            .expect("Failed to build client");
         let state = Arc::new(ClientState {
             tokens: std::sync::Mutex::new(Tokens {
                 token: None,
@@ -80,7 +80,7 @@ impl Client {
 
     /// Set the token.
     pub fn set_token(&self, token: String) {
-        self.state.tokens.lock().expect("tokens poisoned").token = Some(token);
+        self.state.tokens.lock().expect("Tokens poisoned").token = Some(token);
     }
 
     /// Get the token.
@@ -90,7 +90,7 @@ impl Client {
         self.state
             .tokens
             .lock()
-            .expect("token poisoned")
+            .expect("Token poisoned")
             .token
             .clone()
             .ok_or(Error::MissingToken)
@@ -98,10 +98,10 @@ impl Client {
 
     /// Login as a guest.
     pub async fn login_guest(&self) -> Result<(), Error> {
-        let url = "https://api.gofile.io/accounts";
+        const URL: &str = "https://api.gofile.io/accounts";
         let api_response: ApiResponse<AccountResponse> = self
             .client
-            .post(url)
+            .post(URL)
             .send()
             .await?
             .error_for_status()?
@@ -114,14 +114,16 @@ impl Client {
     }
 
     async fn get_website_token(&self) -> Result<String, Error> {
+        const SCRIPT_URL: &str = "https://gofile.io/js/wt.obf.js";
+
         let permit = self
             .state
             .get_website_token_sem
             .acquire()
             .await
-            .expect("sem closed");
+            .expect("Semaphore closed");
         let (token, maybe_website_token) = {
-            let tokens = self.state.tokens.lock().expect("tokens poisoned");
+            let tokens = self.state.tokens.lock().expect("Tokens poisoned");
 
             (
                 tokens.token.clone().ok_or(Error::MissingToken)?,
@@ -134,7 +136,7 @@ impl Client {
 
         let script = self
             .client
-            .get("https://gofile.io/dist/js/wt.obf.js")
+            .get(SCRIPT_URL)
             .send()
             .await?
             .error_for_status()?

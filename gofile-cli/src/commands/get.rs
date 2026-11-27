@@ -148,14 +148,17 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
         None => client.login_guest().await?,
     }
 
-    let page = client.get_page(id).await.context("failed to get page")?;
+    let page = client.get_page(id).await.context("Failed to get page")?;
+    let page_children = page
+        .children
+        .as_ref()
+        .context("Failed to get page children")?;
 
     match options.child_id.as_ref() {
         Some(child_id) => {
-            let child = page
-                .children
+            let child = page_children
                 .get(child_id)
-                .with_context(|| format!("failed to locate child entry with id \"{child_id}\""))?;
+                .with_context(|| format!("Failed to locate child entry with id \"{child_id}\""))?;
 
             let mut out_path = options.output.clone();
             if !options.no_append_name {
@@ -175,7 +178,7 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
             }
             tokio::fs::create_dir_all(&out_dir).await?;
 
-            for child in page.children.values() {
+            for child in page_children.values() {
                 let out_path = out_dir.join(child.name.clone());
                 download_page_child(&client, child, out_path).await?;
             }

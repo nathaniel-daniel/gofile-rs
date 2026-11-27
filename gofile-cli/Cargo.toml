@@ -10,25 +10,25 @@ path = "src/main.rs"
 doc = false
 
 [dependencies]
-anyhow = "1.0.102"
+anyhow = "1.0.105"
 base16ct = { version = "1.0.0", features = [ "alloc" ] }
-clap = { version = "4.6.1", features = [ "derive" ] }
-clap_complete = "4.6.2"
+clap = { version = "4.6.10", features = [ "derive" ] }
+clap_complete = "4.6.12"
 etcetera = "0.11.0"
 gofile = { version = "0.0.0", path = "../gofile", default-features = false }
-indicatif = "0.18.4"
+indicatif = "0.18.6"
 md-5 = "0.11.0"
 mime_guess = { version = "2.0.5", default-features = false }
-opener = "0.8.4"
-pin-project-lite = "0.2.17"
-reqwest = { version = "0.13.2", default-features = false }
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.149"
-shadow-rs = "1.7.1"
-tokio = { version = "1.52.0", features = [ "rt-multi-thread", "fs" ] }
-tokio-util = "0.7.18"
-toml = "1.1.2"
-url = "2.5.8"
+opener = "0.9.0"
+pin-project-lite = "0.2.18"
+reqwest = { version = "0.13.5", default-features = false }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+shadow-rs = "2.0.0"
+tokio = { version = "1.54.1", features = [ "rt-multi-thread", "fs" ] }
+tokio-util = "0.7.20"
+toml = "1.2.3"
+url = "2.5.9"
 
 [features]
 default = [ "gofile/rustls" ]
@@ -36,4 +36,4 @@ native-tls = [ "gofile/native-tls" ]
 rustls = [ "gofile/rustls" ]
 
 [build-dependencies]
-shadow-rs = "1.7.1"
+shadow-rs = "2.0.0"

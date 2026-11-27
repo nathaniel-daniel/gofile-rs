@@ -138,7 +138,7 @@ async fn download_page_child(
 }
 
 pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()> {
-    let config = Config::load().context("failed to load config")?;
+    let config = Config::load().context("Failed to load config")?;
 
     let url = Url::parse(&options.url)?;
     let id = parse_page_url(&url)?;
@@ -149,6 +149,9 @@ pub async fn exec(client: gofile::Client, options: Options) -> anyhow::Result<()
     }
 
     let page = client.get_page(id).await.context("Failed to get page")?;
+    if page.is_frozen.unwrap_or(false) && page.children.is_none() {
+        bail!("Page is frozen");
+    }
     let page_children = page
         .children
         .as_ref()

@@ -115,4 +115,10 @@ pub struct Page {
     /// This can be absent in some cases?
     #[serde(rename = "totalDownloadCount")]
     pub total_download_count: Option<u64>,
+
+    /// Whether the page is frozen.
+    ///
+    /// If frozen, this is present and true.
+    #[serde(rename = "isFrozen")]
+    pub is_frozen: Option<bool>,
 }

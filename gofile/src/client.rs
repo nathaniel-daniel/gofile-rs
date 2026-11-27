@@ -171,7 +171,7 @@ impl Client {
         self.state
             .tokens
             .lock()
-            .expect("tokens poisoned")
+            .expect("Tokens poisoned")
             .website_token = Some(website_token.clone());
 
         drop(permit);
@@ -188,7 +188,7 @@ impl Client {
         let page = 1;
         let page_size = 1000;
         let url = format!(
-            "https://api.gofile.io/contents/{id}?contentFilter=&page={page}&pageSize={page_size}&sortField=name&sortDirection=1"
+            "https://api.gofile.io/contents/{id}?page={page}&pageSize={page_size}&sortField=name&sortDirection=1"
         );
         let request = self
             .client
@@ -202,6 +202,7 @@ impl Client {
             .error_for_status()?
             .json()
             .await?;
+
         Ok(api_response.data)
     }
 

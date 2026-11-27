@@ -71,9 +71,11 @@ pub struct PageChild {
 /// A download page
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct Page {
-    /// The number of children
+    /// The number of children.
+    ///
+    /// This can be absent in some cases?
     #[serde(rename = "childrenCount")]
-    pub children_count: u64,
+    pub children_count: Option<u64>,
 
     /// The folder code.
     ///
@@ -88,13 +90,35 @@ pub struct Page {
     /// This uniquely identifies the folder on the entire website.
     pub id: String,
 
-    pub children: HashMap<String, PageChild>,
+    /// ?
+    ///
+    /// This can be absent in some cases?
+    pub children: Option<HashMap<String, PageChild>>,
+
+    /// ?
+    ///
+    /// This can be absent in some cases?
     #[serde(rename = "totalSize")]
-    pub total_size: u64,
+    pub total_size: Option<u64>,
+
     #[serde(rename = "modTime", with = "time::serde::timestamp")]
     pub mod_time: OffsetDateTime,
     pub name: String,
-    pub public: bool,
+
+    /// ?
+    ///
+    /// This can be absent in some cases?
+    pub public: Option<bool>,
+
+    /// ?
+    ///
+    /// This can be absent in some cases?
     #[serde(rename = "totalDownloadCount")]
-    pub total_download_count: u64,
+    pub total_download_count: Option<u64>,
+
+    /// Whether the page is frozen.
+    ///
+    /// If frozen, this is present and true.
+    #[serde(rename = "isFrozen")]
+    pub is_frozen: Option<bool>,
 }
